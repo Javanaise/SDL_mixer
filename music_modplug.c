@@ -77,6 +77,32 @@ static int MODPLUG_Load(void)
             return -1;
         }
 #endif
+
+/*
+./configure --prefix=/mingw64 --enable-shared=no --enable-music-mod-modplug=yes --enable-music-mod-modplug-shared=no --enable-music-flac=no --enable-music-mp3-mpg123=no --enable-music-opus=no --enable-music-ogg=no --enable-music-midi-timidity=no --enable-music-midi-fluidsynth=no
+make clean
+make
+cp -f ./build/.libs/libSDL2_mixer.a /mingw64/lib/
+cp -f ./SDL_mixer.h /mingw64/include/SDL2/
+*/
+
+extern  void ModPlug_Unload(ModPlugFile* file);
+extern      ModPlugFile* ModPlug_Load(const void* data, int size);
+extern      int  ModPlug_Read(ModPlugFile* file, void* buffer, int size);
+extern      void ModPlug_Seek(ModPlugFile* file, int millisecond);
+extern      void ModPlug_GetSettings(ModPlug_Settings* settings);
+extern      void ModPlug_SetSettings(const ModPlug_Settings* settings);
+extern      void ModPlug_SetMasterVolume(ModPlugFile* file,unsigned int cvol) ;
+    
+        modplug.ModPlug_Load = ModPlug_Load;
+        modplug.ModPlug_Unload = ModPlug_Unload;
+        modplug.ModPlug_Read = ModPlug_Read;
+        modplug.ModPlug_Seek = ModPlug_Seek;
+        modplug.ModPlug_GetSettings = ModPlug_GetSettings;
+        modplug.ModPlug_SetSettings = ModPlug_SetSettings;
+        modplug.ModPlug_SetMasterVolume = ModPlug_SetMasterVolume;
+/*
+        modplug.ModPlug_Load = ModPlug_Load;
         FUNCTION_LOADER(ModPlug_Load, ModPlugFile* (*)(const void* data, int size))
         FUNCTION_LOADER(ModPlug_Unload, void (*)(ModPlugFile* file))
         FUNCTION_LOADER(ModPlug_Read, int  (*)(ModPlugFile* file, void* buffer, int size))
@@ -84,6 +110,7 @@ static int MODPLUG_Load(void)
         FUNCTION_LOADER(ModPlug_GetSettings, void (*)(ModPlug_Settings* settings))
         FUNCTION_LOADER(ModPlug_SetSettings, void (*)(const ModPlug_Settings* settings))
         FUNCTION_LOADER(ModPlug_SetMasterVolume, void (*)(ModPlugFile* file,unsigned int cvol))
+*/
     }
     ++modplug.loaded;
 
